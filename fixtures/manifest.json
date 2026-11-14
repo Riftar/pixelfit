@@ -1,0 +1,44 @@
+{
+  "ground_truth": {
+    "missing_card": [
+      242,
+      62,
+      346,
+      194
+    ],
+    "recolor_card": [
+      130,
+      64,
+      230,
+      192
+    ],
+    "shift_button": [
+      16,
+      196,
+      166,
+      234
+    ],
+    "spacing": [
+      130,
+      64,
+      348,
+      192
+    ],
+    "wide_button": [
+      16,
+      206,
+      168,
+      236
+    ]
+  },
+  "height": 240,
+  "variants": {
+    "clean": "identical copy of the design",
+    "missing_card": "third card missing entirely",
+    "recolor_card": "middle card background recolored",
+    "shift_button": "primary button shifted 14px down",
+    "spacing": "cards 2 and 3 shifted 10px right",
+    "wide_button": "primary button 30px wider"
+  },
+  "width": 360
+}
