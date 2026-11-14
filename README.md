@@ -18,11 +18,17 @@ screenshot: web or mobile.
     # compare a design against an implementation screenshot
     python3 -m pixelfit design.png screenshot.png --out my-report
 
+    # identify which known screen state a screenshot shows
+    python3 -m pixelfit match screenshot.png --library my-library
+
 Outputs in `my-report/`:
 
 - `report.md` - human-readable verdict: score, metrics, drifted regions
 - `report.json` - the same data, machine-readable
 - `diff.png` - the implementation image with red boxes on drifted regions
+
+`match` writes `match.json` and returns exit code 2 when the screenshot
+matches no library entry above the floor (unknown state).
 
 ## How it works
 
@@ -54,11 +60,43 @@ The fidelity score is a weighted blend set by the profile:
 - `digital` (Figma, Canva, PNG): color 45 / SSIM 35 / edges 20
 - `paper` (sketch photos): color 5 / SSIM 40 / edges 55
 
+## Design library (screen states)
+
+A screen rarely has one design: it has a state space (success, empty,
+error-by-cause, ...). A library is a directory with `library.json` and
+the design PNGs it references:
+
+    {
+      "entries": [
+        {"key": "home.success",       "image": "home.success.png"},
+        {"key": "home.network-error", "image": "home.network-error.png",
+         "tags": ["error", "offline"],
+         "ignore": [[0, 0, 360, 34]]}
+      ]
+    }
+
+`pixelfit match screenshot.png --library LIB` identifies which state the
+screenshot shows: a 64-bit difference hash prunes the candidates, the
+full comparator scores the top few, and the report gives the best match,
+the margin over the runner-up, and an unknown-state verdict (exit code
+2) when nothing clears the floor (`--floor`, default 90). A small drift
+does not break identification; it just shows in the score.
+
+## Ignore regions
+
+`--ignore X0,Y0,X1,Y1` (repeatable, design-pixel coordinates) excludes
+rectangles from every metric and from region detection: status bars,
+clocks, toasts, ad slots. Library entries can carry their own ignore
+rects. Pixels inside ignore rects are excluded, not blanked: the score
+is computed over the remaining pixels.
+
 ## Profiles and knobs
 
 - `--profile digital|paper` - metric weighting for the design source
 - `--threshold 0.1` - per-pixel color sensitivity, 0..1 (0.1 is the
   ecosystem-standard default; 1.0 means only black-vs-white counts)
+- `--ignore` - exclusion rects (see above)
+- `--floor 90` (match only) - minimum score for a confident match
 
 ## Supported PNG scope
 
@@ -84,13 +122,16 @@ is area-averaged to the design's dimensions and the report says so.
 ## Roadmap (future versions)
 
 - Overlay web viewer: side-by-side, opacity slider, heatmap
+- Automation harness: drive an app with an external UI-automation tool
+  (for example Maestro flows on Android), screenshot each step, match
+  each step against the library automatically
 - Web capture lane: headless-Chromium screenshots with per-element
   boxes and computed styles in one session
 - Android capture lane: `adb` screenshots plus view-hierarchy dumps
   (element-level attribution)
 - Design-JSON lane: compare a design file's declared values (spacing,
   sizes) against the implementation's declared values
-- Batch mode, ignore regions, CI exit codes
+- Batch mode and CI exit-code matrix
 - Deterministic patch suggestions for numeric drift (delivered as git
   patches; never auto-applied)
 

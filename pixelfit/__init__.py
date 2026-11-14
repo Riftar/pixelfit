@@ -2,6 +2,6 @@
 
 Zero-dependency, offline image comparison core with a thin CLI.
 """
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 from .core import PROFILES, compare, compare_images  # noqa: F401

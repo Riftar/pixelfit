@@ -1,0 +1,26 @@
+{
+  "entries": [
+    {
+      "key": "home.success",
+      "image": "home.success.png",
+      "tags": [
+        "loaded"
+      ]
+    },
+    {
+      "key": "home.empty",
+      "image": "home.empty.png",
+      "tags": [
+        "no-data"
+      ]
+    },
+    {
+      "key": "home.network-error",
+      "image": "home.network-error.png",
+      "tags": [
+        "error",
+        "offline"
+      ]
+    }
+  ]
+}

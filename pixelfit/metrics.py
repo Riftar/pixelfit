@@ -90,20 +90,37 @@ def _rect_sum(intg, w, x0, y0, x1, y1):
             - intg[y1 * width1 + x0] + intg[y0 * width1 + x0])
 
 
-def ssim_grid(g1, g2, w, h, cols=12, rows=8):
+def ssim_grid(g1, g2, w, h, cols=12, rows=8, active=None):
     """Per-cell SSIM over a cols x rows grid.
 
-    Returns (cells, mean): cells is row-major list of cols*rows scores,
-    mean is their area-weighted mean. Each cell's SSIM is computed from
-    the cell's aggregate statistics (mean/variance/covariance), which is
-    the standard fast approximation of windowed SSIM.
+    Returns (cells, mean): cells is row-major list of cols*rows scores
+    (None for cells excluded via the active mask), mean is the
+    area-weighted mean over included cells. Each cell's SSIM is computed
+    from the cell's aggregate statistics (mean/variance/covariance),
+    which is the standard fast approximation of windowed SSIM.
+    `active` is an optional per-pixel bool mask; cells that are less
+    than half active are excluded from the grid and the mean.
     """
     n = w * h
-    i1 = _integral(g1, w, h)
-    i2 = _integral(g2, w, h)
-    sq1 = _integral([v * v for v in g1], w, h)
-    sq2 = _integral([v * v for v in g2], w, h)
-    cr = _integral([a * b for a, b in zip(g1, g2)], w, h)
+    if active is None:
+        m1, m2, sq1, sq2, cr, ia = g1, g2, [v * v for v in g1], \
+            [v * v for v in g2], [a * b for a, b in zip(g1, g2)], None
+        i1, i2 = _integral(m1, w, h), _integral(m2, w, h)
+        isq1, isq2 = _integral(sq1, w, h), _integral(sq2, w, h)
+        icr = _integral(cr, w, h)
+    else:
+        m1 = [v if a else 0.0 for v, a in zip(g1, active)]
+        m2 = [v if a else 0.0 for v, a in zip(g2, active)]
+        sq1 = [v if a else 0.0 for v, a in
+               zip((x * x for x in g1), active)]
+        sq2 = [v if a else 0.0 for v, a in
+               zip((x * x for x in g2), active)]
+        cr = [v if a else 0.0 for v, a in
+              zip((x * y for x, y in zip(g1, g2)), active)]
+        ia = _integral([1.0 if a else 0.0 for a in active], w, h)
+        i1, i2 = _integral(m1, w, h), _integral(m2, w, h)
+        isq1, isq2 = _integral(sq1, w, h), _integral(sq2, w, h)
+        icr = _integral(cr, w, h)
     cells = []
     total, total_area = 0.0, 0
     for gy in range(rows):
@@ -116,24 +133,32 @@ def ssim_grid(g1, g2, w, h, cols=12, rows=8):
             x1 = (gx + 1) * w // cols
             if x1 <= x0:
                 x1 = min(w, x0 + 1)
-            area = (x1 - x0) * (y1 - y0)
-            if area == 0:
+            full_area = (x1 - x0) * (y1 - y0)
+            if full_area == 0:
                 cells.append(1.0)
                 continue
+            if ia is not None:
+                cnt = _rect_sum(ia, w, x0, y0, x1, y1)
+                if cnt < full_area * 0.5:
+                    cells.append(None)
+                    continue
+            else:
+                cnt = full_area
             s1 = _rect_sum(i1, w, x0, y0, x1, y1)
             s2 = _rect_sum(i2, w, x0, y0, x1, y1)
-            v1 = _rect_sum(sq1, w, x0, y0, x1, y1)
-            v2 = _rect_sum(sq2, w, x0, y0, x1, y1)
-            cv = _rect_sum(cr, w, x0, y0, x1, y1)
-            mu1, mu2 = s1 / area, s2 / area
-            var1 = max(0.0, v1 / area - mu1 * mu1)
-            var2 = max(0.0, v2 / area - mu2 * mu2)
-            cov = cv / area - mu1 * mu2
+            v1 = _rect_sum(isq1, w, x0, y0, x1, y1)
+            v2 = _rect_sum(isq2, w, x0, y0, x1, y1)
+            cv = _rect_sum(icr, w, x0, y0, x1, y1)
+            mu1, mu2 = s1 / cnt, s2 / cnt
+            var1 = max(0.0, v1 / cnt - mu1 * mu1)
+            var2 = max(0.0, v2 / cnt - mu2 * mu2)
+            cov = cv / cnt - mu1 * mu2
             score = ((2 * mu1 * mu2 + _C1) * (2 * cov + _C2)) / (
                 (mu1 * mu1 + mu2 * mu2 + _C1) * (var1 + var2 + _C2))
-            cells.append(max(-1.0, min(1.0, score)))
-            total += score * area
-            total_area += area
+            score = max(-1.0, min(1.0, score))
+            cells.append(score)
+            total += score * full_area
+            total_area += full_area
     mean = total / total_area if total_area else 1.0
     return cells, mean
 

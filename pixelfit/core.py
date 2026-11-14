@@ -14,30 +14,63 @@ GRID_ROWS = 8
 EDGE_FRACTION = 0.04
 
 
-def compare(design_path, impl_path, profile="digital", threshold=0.1):
-    """Full comparison. Returns a result dict (JSON-safe)."""
+def compare(design_path, impl_path, profile="digital", threshold=0.1,
+            ignore=None):
+    """Full comparison. Returns a result dict (JSON-safe).
+
+    `ignore` is a list of [x0, y0, x1, y1] rects in design-pixel
+    coordinates; pixels inside them are excluded from every metric and
+    from region detection (status bars, clocks, toasts).
+    """
     if profile not in PROFILES:
         raise ValueError(f"unknown profile {profile!r}; "
                          f"expected one of {sorted(PROFILES)}")
     design = Image.load(design_path)
     impl = Image.load(impl_path)
-    return compare_images(design, impl, profile, threshold)
+    return compare_images(design, impl, profile, threshold, ignore)
 
 
-def compare_images(design, impl, profile="digital", threshold=0.1):
+def compare_images(design, impl, profile="digital", threshold=0.1,
+                   ignore=None):
     wc, ws, we = PROFILES[profile]
     scaled = False
     if (impl.w, impl.h) != (design.w, design.h):
         impl = imageops.resample(impl, design.w, design.h)
         scaled = True
     w, h = design.w, design.h
+    n = w * h
+
+    active = None
+    if ignore:
+        active = [True] * n
+        for x0, y0, x1, y1 in ignore:
+            for y in range(max(0, y0), min(h, y1)):
+                row = y * w
+                for x in range(max(0, x0), min(w, x1)):
+                    active[row + x] = False
 
     ratio, mask, mags = metrics.color_diff(design, impl, threshold)
+    if active is not None:
+        mismatched = 0
+        active_n = 0
+        for o in range(n):
+            if active[o]:
+                active_n += 1
+                if mask[o]:
+                    mismatched += 1
+            else:
+                mask[o] = False
+                mags[o] = 0.0
+        ratio = mismatched / active_n if active_n else 0.0
     g1 = imageops.gray_map(design)
     g2 = imageops.gray_map(impl)
-    cells, ssim_mean = metrics.ssim_grid(g1, g2, w, h, GRID_COLS, GRID_ROWS)
+    cells, ssim_mean = metrics.ssim_grid(g1, g2, w, h, GRID_COLS,
+                                         GRID_ROWS, active)
     e1 = imageops.dilate(metrics.edge_map(g1, w, h, EDGE_FRACTION), w, h, 1)
     e2 = imageops.dilate(metrics.edge_map(g2, w, h, EDGE_FRACTION), w, h, 1)
+    if active is not None:
+        e1 = [v and a for v, a in zip(e1, active)]
+        e2 = [v and a for v, a in zip(e2, active)]
     edge_iou = metrics.iou(e1, e2)
 
     found = regions.clusters(mask, w, h)
@@ -49,7 +82,8 @@ def compare_images(design, impl, profile="digital", threshold=0.1):
 
     color_score = 1.0 - ratio
     score = 100.0 * (wc * color_score + ws * ssim_mean + we * edge_iou)
-    worst_cells = sorted(range(len(cells)), key=lambda i: cells[i])[:6]
+    worst_cells = sorted((i for i, c in enumerate(cells) if c is not None),
+                         key=lambda i: cells[i])[:6]
     return {
         "profile": profile,
         "width": w,
@@ -63,6 +97,7 @@ def compare_images(design, impl, profile="digital", threshold=0.1):
         },
         "fidelity_score": round(score, 2),
         "regions": region_list,
-        "ssim_cells": [round(c, 4) for c in cells],
+        "ssim_cells": [None if c is None else round(c, 4)
+                      for c in cells],
         "worst_cells": worst_cells,
     }
