@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="343dp" android:layout_height="160dp">
+<ImageView android:id="@+id/banner_illustration" android:layout_width="98dp" android:layout_height="77dp" android:contentDescription="@null" android:scaleType="fitXY"/>
+<TextView android:id="@+id/banner_eyebrow" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="20dp" android:layout_marginTop="20dp" android:includeFontPadding="false" android:textColor="#FFFFFF" android:textSize="12sp"/>
+<TextView android:id="@+id/banner_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="20dp" android:layout_marginTop="45dp" android:includeFontPadding="false" android:textColor="#FFFFFF" android:textSize="18sp"/>
+<TextView android:id="@+id/banner_action" android:layout_width="wrap_content" android:layout_height="31dp" android:layout_marginStart="20dp" android:layout_marginTop="113dp" android:paddingStart="12dp" android:paddingEnd="12dp" android:background="@drawable/home_button" android:gravity="center" android:includeFontPadding="false" android:textSize="12sp"/>
+</FrameLayout>

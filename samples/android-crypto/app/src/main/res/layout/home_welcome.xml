@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="343dp" android:layout_height="141dp" android:background="@drawable/home_banner">
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="20dp" android:layout_marginTop="24dp" android:includeFontPadding="false" android:text="Welcome Agilan," android:textColor="#FFFFFF" android:textSize="12sp"/>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="20dp" android:layout_marginTop="47dp" android:includeFontPadding="false" android:text="Make you first Investment today" android:textColor="#FFFFFF" android:textSize="18sp"/>
+<TextView android:layout_width="92dp" android:layout_height="31dp" android:layout_marginStart="20dp" android:layout_marginTop="90dp" android:background="@drawable/home_button" android:gravity="center" android:includeFontPadding="false" android:text="Invest Today" android:textColor="#0063F5" android:textSize="12sp"/>
+</FrameLayout>

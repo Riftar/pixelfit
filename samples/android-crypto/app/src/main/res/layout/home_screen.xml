@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="375dp" android:layout_height="812dp"
+    android:background="#F8F9FA" android:clipChildren="true">
+    <TextView android:layout_width="54dp" android:layout_height="21dp" android:layout_marginStart="32dp" android:layout_marginTop="15dp" android:includeFontPadding="false" android:text="9:41" android:textColor="#212529" android:textSize="14sp" android:textStyle="bold" />
+    <include layout="@layout/home_welcome" android:layout_width="343dp" android:layout_height="141dp" android:layout_marginStart="16dp" android:layout_marginTop="56dp" />
+    <LinearLayout android:layout_width="343dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_marginTop="229dp" android:orientation="vertical">
+        <TextView android:layout_width="wrap_content" android:layout_height="20dp" android:includeFontPadding="false" android:text="Trending Coins" android:textColor="#212529" android:textSize="20sp" android:textStyle="bold" />
+        <LinearLayout android:id="@+id/coin_list" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="vertical" />
+    </LinearLayout>
+    <include layout="@layout/home_navigation" android:layout_width="375dp" android:layout_height="88dp" android:layout_marginTop="724dp" />
+</FrameLayout>

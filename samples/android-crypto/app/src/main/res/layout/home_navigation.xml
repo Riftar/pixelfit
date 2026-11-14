@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="375dp" android:layout_height="88dp" android:background="#FFFFFF">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="42dp" android:paddingStart="20dp" android:paddingEnd="20dp" android:orientation="horizontal">
+<TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:includeFontPadding="false" android:text="Home" android:textColor="#0063F5" android:textSize="10sp"/>
+<TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:includeFontPadding="false" android:text="Portfolio" android:textColor="#6C757D" android:textSize="10sp"/>
+<TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:includeFontPadding="false" android:text="Rewards" android:textColor="#6C757D" android:textSize="10sp"/>
+<TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:includeFontPadding="false" android:text="Market" android:textColor="#6C757D" android:textSize="10sp"/>
+<TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:includeFontPadding="false" android:text="Profile" android:textColor="#6C757D" android:textSize="10sp"/>
+</LinearLayout>
+<View android:layout_width="134dp" android:layout_height="5dp" android:layout_marginStart="121dp" android:layout_marginTop="75dp" android:background="@drawable/home_handle"/>
+</FrameLayout>

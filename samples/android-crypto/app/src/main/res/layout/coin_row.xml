@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="343dp" android:layout_height="72dp" android:layout_marginBottom="8dp" android:background="@drawable/coin_card">
+<TextView android:id="@+id/coin_logo" android:layout_width="40dp" android:layout_height="40dp" android:layout_marginStart="16dp" android:layout_marginTop="16dp" android:gravity="center" android:includeFontPadding="false" android:textColor="#FFFFFF" android:textSize="23sp" android:textStyle="bold"/>
+<LinearLayout android:layout_width="160dp" android:layout_height="wrap_content" android:layout_marginStart="68dp" android:layout_marginTop="15dp" android:orientation="vertical">
+<TextView android:id="@+id/coin_name" android:layout_width="wrap_content" android:layout_height="20dp" android:includeFontPadding="false" android:singleLine="true" android:textColor="#212529" android:textSize="16sp"/>
+<TextView android:id="@+id/coin_symbol" android:layout_width="wrap_content" android:layout_height="13dp" android:includeFontPadding="false" android:textColor="#6C757D" android:textSize="10sp"/>
+</LinearLayout>
+<LinearLayout android:layout_width="110dp" android:layout_height="wrap_content" android:layout_gravity="end" android:layout_marginEnd="16dp" android:layout_marginTop="15dp" android:gravity="end" android:orientation="vertical">
+<TextView android:id="@+id/coin_price" android:layout_width="wrap_content" android:layout_height="20dp" android:includeFontPadding="false" android:textColor="#212529" android:textSize="16sp"/>
+<TextView android:id="@+id/coin_change" android:layout_width="wrap_content" android:layout_height="13dp" android:includeFontPadding="false" android:textSize="10sp"/>
+</LinearLayout>
+</FrameLayout>

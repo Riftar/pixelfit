@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="375dp" android:layout_height="812dp" android:background="#F8F9FA" android:clipChildren="true">
+<TextView android:layout_width="54dp" android:layout_height="21dp" android:layout_marginStart="32dp" android:layout_marginTop="15dp" android:includeFontPadding="false" android:text="9:41" android:textColor="#212529" android:textSize="14sp" android:textStyle="bold"/>
+<include android:id="@+id/coupons_card" layout="@layout/reward_summary_card" android:layout_width="343dp" android:layout_height="174dp" android:layout_marginStart="16dp" android:layout_marginTop="64dp"/>
+<include android:id="@+id/referral_card" layout="@layout/reward_summary_card" android:layout_width="343dp" android:layout_height="137dp" android:layout_marginStart="16dp" android:layout_marginTop="241dp"/>
+<include android:id="@+id/referral_banner" layout="@layout/reward_banner" android:layout_width="343dp" android:layout_height="160dp" android:layout_marginStart="16dp" android:layout_marginTop="394dp"/>
+<include android:id="@+id/share_banner" layout="@layout/reward_banner" android:layout_width="343dp" android:layout_height="160dp" android:layout_marginStart="16dp" android:layout_marginTop="562dp"/>
+<include android:id="@+id/rewards_nav" layout="@layout/home_navigation" android:layout_width="375dp" android:layout_height="88dp" android:layout_marginTop="724dp"/>
+</FrameLayout>

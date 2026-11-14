@@ -30,6 +30,11 @@ Outputs in `my-report/`:
 `match` writes `match.json` and returns exit code 2 when the screenshot
 matches no library entry above the floor (unknown state).
 
+## Android sample
+
+See [samples/android-crypto](samples/android-crypto/) for XML and Jetpack Compose
+screens, Figma reference images, captured renders, and comparison examples.
+
 ## How it works
 
 Three independent metrics, because each one is blind to what the others
